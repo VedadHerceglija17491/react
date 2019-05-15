@@ -12,6 +12,7 @@ class Todos extends Component {
      <TodoItem key={todo.id} todo={todo} 
      markComplete={this.props.markComplete} 
      delTodo={this.props.delTodo}
+    
      /> //ovo saljem todoitem i uporedo ga pozivam, preko propsa saljem sa veceg levela 
     ));
   }
