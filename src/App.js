@@ -5,31 +5,18 @@ import './App.css';
 import Todos from './components/Todos';
 import AddTodo from './components/AddTodo';
 import About from './components/pages/About';
-import uuid from 'uuid';
+//import uuid from 'uuid';
+
+import axios from 'axios'//upalim axios
 
 class App extends Component {
   state = {
-    todos: [
-  
-      {
-        id: uuid.v4(),
-        title: 'Take out the trash',
-        compleated: false
-      },
-      {
-        id: uuid.v4(),
-        title: 'Dinner with wife',
-        compleated: false
-      },
-      {
-        id: uuid.v4(),
-        title: 'Metting with boss',
-        compleated: false
-      }
-
-      
-    ]//todos je kao neki niz staticnih objekata
+    todos: []//todos je kao neki niz staticnih objekata, mora bit iako pozivamo iz baze
   }
+  componentDidMount(){ //ovdje ga pozovem, samo stavim ovaj onLine link
+    axios.get('https://jsonplaceholder.typicode.com/todos?_limit=10').then(res => this.setState({todos : res.data})) // dodjeljujemo todosima
+  }
+
     //setState vjerovatno znaci da ce se mjenjati stanje
   markComplete = (id) =>{ //id mora poslat da se zna koji se brise
     this.setState({ todos: this.state.todos.map(todo =>{ //map prolazi kroz sve u nizu
@@ -42,17 +29,18 @@ class App extends Component {
   }
   //ovu fju saljem dalje da mogu mjenjat stanje preko nj (brisanje, nejasano kako radi)
   delTodo = (id) =>{
-    this.setState({ todos: [...this.state.todos.filter(todo => todo.id !== id)] });
+    axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`).then(res =>  this.setState({ todos: [...this.state.todos.filter(todo => todo.id !== id)] }));
+   
   }
   //dodavanje todo na listu
 
   addTodo = (title) => {
-    const newTodo = {
-      id: uuid.v4(),
-      title,
-      compleated: false
-    }
-  this.setState({ todos: [...this.state.todos, newTodo] });
+  axios.post('https://jsonplaceholder.typicode.com/todos', {
+    title,
+    compleated: false
+  })
+    .then(res => this.setState({ todos: [...this.state.todos, res.data] }));
+ 
   }
 
   render() {
